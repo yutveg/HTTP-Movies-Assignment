@@ -19,6 +19,16 @@ export default class Movie extends React.Component {
     }
   }
 
+  handleEdit = e => {
+    e.preventDefault();
+    this.props.history.push(`/update-movie/${this.state.movie.id}`);
+  };
+
+  handleDelete = e => {
+    e.preventDefault();
+    this.props.history.push(`/delete-confirm/${this.state.movie.id}`);
+  };
+
   fetchMovie = id => {
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
@@ -42,6 +52,8 @@ export default class Movie extends React.Component {
         <div className="save-button" onClick={this.saveMovie}>
           Save
         </div>
+        <button onClick={this.handleEdit}>Edit</button>
+        <button onClick={this.handleDelete}>Delete</button>
       </div>
     );
   }
