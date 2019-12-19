@@ -1,40 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const UpdateForm = props => {
-  const [movie, setMovie] = useState();
+  const [movie, setMovie] = useState({
+    title: "",
+    director: "",
+    metascore: "",
+    stars: []
+  });
+
+  useEffect(() => {
+    const movieToBeEdited = props.movies.find(
+      movie => `${movie.id}` === props.match.params.id
+    );
+    if (movieToBeEdited) setMovie(movieToBeEdited);
+  }, [props.match.params.id, props.movies]);
 
   const handleInputs = e => {
     e.persist();
     let value = e.target.value;
     if (e.target.name === "metascore") value = parseInt(value, 10);
+
+    setMovie({
+      ...movie,
+      [e.target.name]: value
+    });
+  };
+
+  const updateMovie = e => {
+    e.preventDefault();
+    axios
+      .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+      .then(res => {
+        setMovie(res.data);
+        props.history.push("/");
+      })
+      .catch(err => console.log(err));
   };
 
   return (
-    <form>
-      <label></label>
+    <form onSubmit={updateMovie}>
+      <label>Title</label>
       <input
         type="text"
-        placeholder="Title.."
         name="title"
         value={movie.title}
         onChange={handleInputs}
       />
-      <label></label>
+      <label>Director</label>
       <input
         type="text"
-        placeholder="Director.."
         name="director"
         value={movie.director}
         onChange={handleInputs}
       />
-      <label></label>
+      <label>Metascore:</label>
       <input
         type="text"
-        placeholder="Metascore.."
         name="metascore"
         value={movie.metascore}
         onChange={handleInputs}
       />
+      <label>Stars:</label>
+      <input
+        type="text"
+        name="stars"
+        value={movie.stars}
+        onChange={handleInputs}
+      />
+      <button type="submit">Update</button>
     </form>
   );
 };
