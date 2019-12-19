@@ -20,11 +20,19 @@ const UpdateForm = props => {
     e.persist();
     let value = e.target.value;
     if (e.target.name === "metascore") value = parseInt(value, 10);
-
-    setMovie({
-      ...movie,
-      [e.target.name]: value
-    });
+    else if (e.target.name === "stars") {
+      console.log(movie.stars);
+      let starsArr = value.split(",");
+      setMovie({
+        ...movie,
+        [e.target.name]: starsArr
+      });
+    } else {
+      setMovie({
+        ...movie,
+        [e.target.name]: value
+      });
+    }
   };
 
   const updateMovie = e => {
@@ -32,8 +40,8 @@ const UpdateForm = props => {
     axios
       .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
       .then(res => {
-        setMovie(res.data);
-        props.history.push("/");
+        props.setToggleRender(!props.toggleRender);
+        setTimeout(() => props.history.push("/"), 250);
       })
       .catch(err => console.log(err));
   };

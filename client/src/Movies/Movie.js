@@ -30,7 +30,8 @@ export default class Movie extends React.Component {
       .delete(`http://localhost:5000/api/movies/${this.state.movie.id}`)
       .then(res => {
         console.log(res);
-        this.props.history.push("/");
+        this.props.setToggleRender(!this.props.toggleRender);
+        setTimeout(() => this.props.history.push("/"), 250);
       })
       .catch(err => console.log(err));
   };

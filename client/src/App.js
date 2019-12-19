@@ -9,6 +9,7 @@ import axios from "axios";
 const App = () => {
   const [savedList, setSavedList] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [toggleRender, setToggleRender] = useState(false);
 
   useEffect(() => {
     axios
@@ -18,7 +19,7 @@ const App = () => {
         console.log(res.data);
       })
       .catch(err => console.log(err.response));
-  }, []);
+  }, [toggleRender]);
 
   const addToSavedList = movie => {
     setSavedList([...savedList, movie]);
@@ -41,15 +42,22 @@ const App = () => {
             return (
               <Movie
                 {...props}
-                updateList={setMovies}
+                toggleRender={toggleRender}
                 addToSavedList={addToSavedList}
+                setToggleRender={setToggleRender}
               />
             );
           }}
         />
         <Route
           path="/update-movie/:id"
-          render={props => <UpdateForm {...props} movies={movies} />}
+          render={props => (
+            <UpdateForm
+              {...props}
+              setToggleRender={setToggleRender}
+              movies={movies}
+            />
+          )}
         />
       </>
     );
